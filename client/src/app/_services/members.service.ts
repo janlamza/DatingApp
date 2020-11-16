@@ -51,13 +51,26 @@ export class MembersService {
   }
 
 
+  addLike(username: string) {
+    return this.http.post(this.baseUrl + 'likes/' + username, {});
+  }
+
+
+
+
+  getLikes(predicate: string, pageNumber, pageSize) {
+    let params = this.getPaginationHeaders(pageNumber, pageSize);
+    params = params.append('predicate', predicate);
+    return this.getPaginatedResult<Partial<Member[]>>(this.baseUrl + 'likes', params);
+  }
+
+
 
   getMembers(userParams: UserParams) {
     var response = this.memberCache.get(Object.values(userParams).join('-'));
     if (response) {
       return of(response);
     }
-
     let params = this.getPaginationHeaders(userParams.pageNumber, userParams.pageSize)
     params = params.append('minAge', userParams.minAge.toString());
     params = params.append('maxAge', userParams.maxAge.toString());
